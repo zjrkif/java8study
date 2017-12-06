@@ -1,4 +1,4 @@
-
+package ch01;
 public class Apple {
 	private int weight;
 	
