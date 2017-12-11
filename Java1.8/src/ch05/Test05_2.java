@@ -17,8 +17,7 @@ public class Test05_2 {
 		//求最大值（无初始值变种）
 		Optional<Integer> oMax = numbers.stream().reduce(Integer::max);
 		oMax.ifPresent(System.out::println);
-		
-		
+
 		
 		Trader raoul = new Trader("Raoul", "Cambriage");
 		Trader mario = new Trader("Mario", "Milan");
