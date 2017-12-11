@@ -5,9 +5,11 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.IntSummaryStatistics;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import ch04.Dish;
+import ch04.Dish.caloriesLevel;
 
 public class Test06 {
 	public static void main(String[] args) {
@@ -62,5 +64,19 @@ public class Test06 {
 		System.out.println("有分隔符："+dishNamesWithSeparator);
 		String dishNamesWithSeparatorAndPS = menu.stream().map(Dish::getName).collect(Collectors.joining(",","{","}"));
 		System.out.println("有分隔符和前后缀："+dishNamesWithSeparatorAndPS);
+		
+		//按照菜肴的类型进行分组:{MEAT=[pork, beef, chicken], OTHER=[french fries, rice, season fruit, pizza], FISH=[prawns, salmon]}
+		Map<Dish.Type, List<Dish>> dishesByType = menu.stream().collect(Collectors.groupingBy(Dish::getType));
+		System.out.println(dishesByType);
+		
+		//按照卡路里分组：低热、普通、高热
+		Map<Dish.caloriesLevel, List<Dish>> dishesByCaloricLevel = menu.stream().collect(Collectors.groupingBy(d->{if (d.getCalories()<=400) {
+			return Dish.caloriesLevel.DIET;
+		} else if(d.getCalories()<=700){
+			return Dish.caloriesLevel.NORMAL;
+		}else {
+			return Dish.caloriesLevel.FAT;
+		}}));
+		System.out.println(dishesByCaloricLevel);
 	}
 }
