@@ -130,5 +130,20 @@ public class Test06 {
 		}, Collectors.toCollection(HashSet::new))));
 		System.out.println(caloricLevelByType);
 		
+		System.out.println("==================================================================");
+		//分区:Collectors.partitioningBy方法 返回bool值
+		//将menu分成素食和非素食两组（只有两组，一组true，一组false）
+		Map<Boolean, List<Dish>> partitionedMenu = menu.stream().collect(Collectors.partitioningBy(Dish::isVegetarian));
+		System.out.println(partitionedMenu);
+		
+		//取每一组的最大卡路里的菜肴
+		Map<Boolean, Dish> mostCaloricPartitionedByVegetarian = menu.stream().collect(Collectors.partitioningBy(Dish::isVegetarian, Collectors.collectingAndThen(Collectors.maxBy(Comparator.comparing(Dish::getCalories)), Optional::get)));
+		System.out.print("每组卡路里最大的菜肴是：");
+		System.out.println(mostCaloricPartitionedByVegetarian);
+		
+		//分成素食和非素食两组后，再按照菜肴类型分组
+		Map<Boolean, Map<Dish.Type, List<Dish>>> vegetarianDishByType = menu.stream().collect(Collectors.partitioningBy(Dish::isVegetarian, Collectors.groupingBy(Dish::getType)));
+		System.out.println(vegetarianDishByType);
+		
 	}
 }
