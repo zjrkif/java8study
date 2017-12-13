@@ -11,11 +11,15 @@ public class ch06_2 {
 		return IntStream.range(2, numberRoot).noneMatch(i->number%i==0);
 	}
 	public Map<Boolean, List<Integer>> numbersGroupByPrime(int number){
-		return IntStream.rangeClosed(2, number).boxed().collect(Collectors.partitioningBy(n->isPrime(n)));
+		//parallel并行
+		return IntStream.rangeClosed(2, number).boxed().parallel().collect(Collectors.partitioningBy(n->isPrime(n)));
 	}
 	public static void main(String[] args) {
-		Map<Boolean, List<Integer>> numbers = new ch06_2().numbersGroupByPrime(200000);
-		System.out.println(numbers.size());
+		long time1 = System.currentTimeMillis();
+		Map<Boolean, List<Integer>> numbers = new ch06_2().numbersGroupByPrime(9000000);
+		long time2 = System.currentTimeMillis();
+		System.out.println("work is over!" + (time2 - time1) / 60000 + "minutes"
+				+ ((time2 - time1) % 60000) / 1000 + "seconds");
 //		System.out.println("20内的非质数："+numbers.get(false));
 //		System.out.println("20内的质数："+numbers.get(true));
 	}
