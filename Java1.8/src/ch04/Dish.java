@@ -53,4 +53,14 @@ public class Dish {
                            new Dish("salmon", false, 450, Dish.Type.FISH));
 
 	public enum caloriesLevel { DIET, NORMAL, FAT }
+	
+	public caloriesLevel getCaloricLevel(){
+		if (this.getCalories()<=400) {
+			return caloriesLevel.DIET;
+		} else if(this.getCalories()<=700){
+			return caloriesLevel.NORMAL;
+		}else{
+			return caloriesLevel.FAT;
+		}
+	}
 }

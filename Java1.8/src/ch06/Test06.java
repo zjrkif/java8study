@@ -83,15 +83,7 @@ public class Test06 {
 
 		// groupingBy的用法：1、多级分组 一级类型，二级卡路里
 		Map<Dish.Type, Map<Dish.caloriesLevel, List<Dish>>> dishesByTypeCaloricLevel = menu.stream()
-				.collect(Collectors.groupingBy(Dish::getType, Collectors.groupingBy(d -> {
-					if (d.getCalories() <= 400) {
-						return Dish.caloriesLevel.DIET;
-					} else if (d.getCalories() <= 700) {
-						return Dish.caloriesLevel.NORMAL;
-					} else {
-						return Dish.caloriesLevel.FAT;
-					}
-				})));
+				.collect(Collectors.groupingBy(Dish::getType, Collectors.groupingBy(Dish::getCaloricLevel)));
 		System.out.print("以类型和卡路里进行分组：");
 		System.out.println(dishesByTypeCaloricLevel);
 
@@ -113,37 +105,34 @@ public class Test06 {
 				.collectingAndThen(Collectors.maxBy(Comparator.comparing(Dish::getCalories)), Optional::get)));
 		System.out.print("以类型进行分组，每一组卡路里最大的菜肴是：");
 		System.out.println(mostCaloricByType2);
-		
-		Map<Dish.Type, Integer> sumCaloricByType = menu.stream().collect(Collectors.groupingBy(Dish::getType,Collectors.summingInt(Dish::getCalories)));
+
+		Map<Dish.Type, Integer> sumCaloricByType = menu.stream()
+				.collect(Collectors.groupingBy(Dish::getType, Collectors.summingInt(Dish::getCalories)));
 		System.out.print("以类型进行分组，每一组卡路里总和是：");
 		System.out.println(sumCaloricByType);
-		
-		//重要 最后的构造函数引用
-		Map<Dish.Type, Set<Dish.caloriesLevel>> caloricLevelByType = menu.stream().collect(Collectors.groupingBy(Dish::getType,Collectors.mapping(d->{
-			if (d.getCalories() <= 400) {
-				return Dish.caloriesLevel.DIET;
-			} else if (d.getCalories() <= 700) {
-				return Dish.caloriesLevel.NORMAL;
-			} else {
-				return Dish.caloriesLevel.FAT;
-			}
-		}, Collectors.toCollection(HashSet::new))));
+
+		// 重要 最后的构造函数引用
+		Map<Dish.Type, Set<Dish.caloriesLevel>> caloricLevelByType = menu.stream().collect(Collectors.groupingBy(
+				Dish::getType, Collectors.mapping(Dish::getCaloricLevel, Collectors.toCollection(HashSet::new))));
 		System.out.println(caloricLevelByType);
-		
+
 		System.out.println("==================================================================");
-		//分区:Collectors.partitioningBy方法 返回bool值
-		//将menu分成素食和非素食两组（只有两组，一组true，一组false）
+		// 分区:Collectors.partitioningBy方法 返回bool值
+		// 将menu分成素食和非素食两组（只有两组，一组true，一组false）
 		Map<Boolean, List<Dish>> partitionedMenu = menu.stream().collect(Collectors.partitioningBy(Dish::isVegetarian));
 		System.out.println(partitionedMenu);
-		
-		//取每一组的最大卡路里的菜肴
-		Map<Boolean, Dish> mostCaloricPartitionedByVegetarian = menu.stream().collect(Collectors.partitioningBy(Dish::isVegetarian, Collectors.collectingAndThen(Collectors.maxBy(Comparator.comparing(Dish::getCalories)), Optional::get)));
+
+		// 取每一组的最大卡路里的菜肴
+		Map<Boolean, Dish> mostCaloricPartitionedByVegetarian = menu.stream()
+				.collect(Collectors.partitioningBy(Dish::isVegetarian, Collectors
+						.collectingAndThen(Collectors.maxBy(Comparator.comparing(Dish::getCalories)), Optional::get)));
 		System.out.print("每组卡路里最大的菜肴是：");
 		System.out.println(mostCaloricPartitionedByVegetarian);
-		
-		//分成素食和非素食两组后，再按照菜肴类型分组
-		Map<Boolean, Map<Dish.Type, List<Dish>>> vegetarianDishByType = menu.stream().collect(Collectors.partitioningBy(Dish::isVegetarian, Collectors.groupingBy(Dish::getType)));
+
+		// 分成素食和非素食两组后，再按照菜肴类型分组
+		Map<Boolean, Map<Dish.Type, List<Dish>>> vegetarianDishByType = menu.stream()
+				.collect(Collectors.partitioningBy(Dish::isVegetarian, Collectors.groupingBy(Dish::getType)));
 		System.out.println(vegetarianDishByType);
-		
+
 	}
 }
